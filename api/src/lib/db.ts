@@ -1,21 +1,18 @@
-// See https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/constructor
-// for options.
-
 import { PrismaClient } from '@prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
 
 import { emitLogLevels, handlePrismaLogging } from '@redwoodjs/api/logger'
 
 import { logger } from './logger'
 
-/*
- * Instance of the Prisma Client
- */
-export const db = new PrismaClient({
+const prisma = new PrismaClient({
   log: emitLogLevels(['info', 'warn', 'error']),
 })
 
 handlePrismaLogging({
-  db,
+  db: prisma,
   logger,
   logLevels: ['info', 'warn', 'error'],
 })
+
+export const db = prisma.$extends(withAccelerate())
